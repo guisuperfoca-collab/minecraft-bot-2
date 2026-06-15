@@ -3,11 +3,9 @@ import mineflayer from "mineflayer";
 const HOST = "Marshblack_2-6QHA.aternos.me";
 const PORT = 14036;
 const USERNAME = "Bot_ligado";
-const VERSION = "1.21.2";
+const VERSION = "1.20.4";
 
 const RECONNECT_DELAY_MS = 10000;
-
-let reconnectTimer = null;
 
 function log(msg) {
   console.log(`[${new Date().toLocaleTimeString("pt-PT")}] ${msg}`);
@@ -29,7 +27,7 @@ function createBot() {
   });
 
   bot.on("chat", (username, message) => {
-    if (username === USERNAME) return;
+    if (username === bot.username) return;
     console.log(`[CHAT] ${username}: ${message}`);
   });
 
@@ -47,16 +45,12 @@ function createBot() {
     console.log(err);
   });
 
-  bot.on("end", (reason) => {
-    console.log("🔌 Conexão encerrada:");
-    console.log(reason);
+  bot.on("end", () => {
+    log("🔌 Desconectado do servidor");
 
-    if (reconnectTimer) return;
+    log(`🔄 Reconectando em ${RECONNECT_DELAY_MS / 1000} segundos...`);
 
-    log(`Reconectando em ${RECONNECT_DELAY_MS / 1000} segundos...`);
-
-    reconnectTimer = setTimeout(() => {
-      reconnectTimer = null;
+    setTimeout(() => {
       createBot();
     }, RECONNECT_DELAY_MS);
   });

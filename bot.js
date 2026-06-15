@@ -5,15 +5,16 @@ const PORT = 14036;
 const USERNAME = "Bot_ligado";
 const VERSION = "1.20.4";
 
-const RECONNECT_DELAY_MS = 10000;
+const RECONNECT_DELAY = 10000;
+
+process.on("uncaughtException", console.log);
+process.on("unhandledRejection", console.log);
 
 function log(msg) {
   console.log(`[${new Date().toLocaleTimeString("pt-PT")}] ${msg}`);
 }
 
 function createBot() {
-  log(`Conectando a ${HOST}:${PORT} como ${USERNAME}...`);
-
   const bot = mineflayer.createBot({
     host: HOST,
     port: PORT,
@@ -23,37 +24,29 @@ function createBot() {
   });
 
   bot.once("spawn", () => {
-    log("✅ Bot conectado com sucesso!");
-  });
-
-  bot.on("chat", (username, message) => {
-    if (username === bot.username) return;
-    console.log(`[CHAT] ${username}: ${message}`);
-  });
-
-  bot.on("messagestr", (message) => {
-    console.log(`[SERVER] ${message}`);
+    log("✅ Bot online");
   });
 
   bot.on("kicked", (reason) => {
-    console.log("❌ KICKADO:");
-    console.log(reason);
+    console.log("❌ KICK:", reason);
   });
 
   bot.on("error", (err) => {
-    console.log("❌ ERRO:");
-    console.log(err);
+    console.log("❌ ERROR:", err);
   });
 
   bot.on("end", () => {
-    log("🔌 Desconectado do servidor");
-
-    log(`🔄 Reconectando em ${RECONNECT_DELAY_MS / 1000} segundos...`);
+    log("🔌 Desconectado... reconectando");
 
     setTimeout(() => {
       createBot();
-    }, RECONNECT_DELAY_MS);
+    }, RECONNECT_DELAY);
   });
 }
 
 createBot();
+
+// 🔥 mantém Railway vivo
+setInterval(() => {
+  console.log("💓 keepalive");
+}, 30000);

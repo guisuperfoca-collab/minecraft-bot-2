@@ -1,12 +1,8 @@
 {
-  "name": "minecraft-bot",
+  "name": "bot",
   "version": "1.0.0",
-  "type": "module",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
-  },
-  "dependencies": {
-    "mineflayer": "^4.23.0"
   }
 }

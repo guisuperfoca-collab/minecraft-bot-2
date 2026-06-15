@@ -3,7 +3,7 @@ import mineflayer from "mineflayer";
 const HOST = "Marshblack_2-6QHA.aternos.me";
 const PORT = 14036;
 const USERNAME = "Bot_ligado";
-const VERSION = "1.21.2";
+const VERSION = false
 
 const RECONNECT_DELAY_MS = 10000;
 

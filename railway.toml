@@ -1,5 +1,6 @@
-{
-  "deploy": {
-    "startCommand": "node bot.js"
-  }
-}
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "node bot.js"
+restartPolicyType = "always"

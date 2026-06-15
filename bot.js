@@ -4,7 +4,8 @@ const HOST = "Marshblack_2-6QHA.aternos.me";
 const PORT = 14036;
 const USERNAME = "Bot_ligado";
 const VERSION = "1.21.2";
-const RECONNECT_DELAY_MS = 10_000;
+
+const RECONNECT_DELAY_MS = 10000;
 
 let reconnectTimer = null;
 
@@ -20,42 +21,45 @@ function createBot() {
     port: PORT,
     username: USERNAME,
     version: VERSION,
-    auth: "offline",
-    hideErrors: false,
+    auth: "offline"
   });
 
   bot.once("spawn", () => {
-    log("Bot conectado e dentro do servidor!");
+    log("✅ Bot conectado com sucesso!");
   });
 
   bot.on("chat", (username, message) => {
     if (username === USERNAME) return;
-    log(`[Chat] ${username}: ${message}`);
+    console.log(`[CHAT] ${username}: ${message}`);
+  });
+
+  bot.on("messagestr", (message) => {
+    console.log(`[SERVER] ${message}`);
   });
 
   bot.on("kicked", (reason) => {
-    log(`Bot foi kickado: ${reason}`);
-    scheduleReconnect();
+    console.log("❌ KICKADO:");
+    console.log(reason);
   });
 
   bot.on("error", (err) => {
-    log(`Erro: ${err.message}`);
-    scheduleReconnect();
+    console.log("❌ ERRO:");
+    console.log(err);
   });
 
   bot.on("end", (reason) => {
-    log(`Conexão encerrada: ${reason}`);
-    scheduleReconnect();
-  });
-}
+    console.log("🔌 Conexão encerrada:");
+    console.log(reason);
 
-function scheduleReconnect() {
-  if (reconnectTimer) return;
-  log(`Reconectando em ${RECONNECT_DELAY_MS / 1000} segundos...`);
-  reconnectTimer = setTimeout(() => {
-    reconnectTimer = null;
-    createBot();
-  }, RECONNECT_DELAY_MS);
+    if (reconnectTimer) return;
+
+    log(`Reconectando em ${RECONNECT_DELAY_MS / 1000} segundos...`);
+
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      createBot();
+    }, RECONNECT_DELAY_MS);
+  });
 }
 
 createBot();

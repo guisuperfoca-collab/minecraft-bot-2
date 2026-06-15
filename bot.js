@@ -3,19 +3,21 @@ import mineflayer from "mineflayer";
 const HOST = "Marshblack_2-6QHA.aternos.me";
 const PORT = 14036;
 const USERNAME = "Bot_ligado";
-const VERSION = "1.20.4";
+const VERSION = "1.21.2";
 
 const RECONNECT_DELAY_MS = 10000;
 
-process.on("uncaughtException", console.log);
-process.on("unhandledRejection", console.log);
+let reconnectTimer = null;
+let bot = null;
 
 function log(msg) {
   console.log(`[${new Date().toLocaleTimeString("pt-PT")}] ${msg}`);
 }
 
 function createBot() {
-  const bot = mineflayer.createBot({
+  log(`Conectando a ${HOST}:${PORT} como ${USERNAME}...`);
+
+  bot = mineflayer.createBot({
     host: HOST,
     port: PORT,
     username: USERNAME,
@@ -24,7 +26,7 @@ function createBot() {
   });
 
   bot.once("spawn", () => {
-    log("✅ Bot entrou no servidor!");
+    log("✅ Bot conectado com sucesso!");
   });
 
   bot.on("chat", (username, message) => {
@@ -32,8 +34,12 @@ function createBot() {
     console.log(`[CHAT] ${username}: ${message}`);
   });
 
+  bot.on("messagestr", (message) => {
+    console.log(`[SERVER] ${message}`);
+  });
+
   bot.on("kicked", (reason) => {
-    console.log("❌ KICK:", reason);
+    console.log("❌ KICKADO:", reason?.toString?.() || reason);
   });
 
   bot.on("error", (err) => {
@@ -41,9 +47,12 @@ function createBot() {
   });
 
   bot.on("end", () => {
-    log("🔌 Desconectado... reconectando");
+    console.log("🔌 Bot desconectado");
 
-    setTimeout(() => {
+    if (reconnectTimer) return;
+
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
       createBot();
     }, RECONNECT_DELAY_MS);
   });

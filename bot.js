@@ -3,22 +3,18 @@ import mineflayer from "mineflayer";
 const HOST = "Marshblack_2-6QHA.aternos.me";
 const PORT = 14036;
 const USERNAME = "Bot_ligado";
-
-// ⚠️ MUITO IMPORTANTE:
-// usa "auto" se não tens certeza da versão
-const VERSION = false;
+const VERSION = "1.20.4";
 
 const RECONNECT_DELAY_MS = 10000;
 
-let reconnecting = false;
+process.on("uncaughtException", console.log);
+process.on("unhandledRejection", console.log);
 
 function log(msg) {
   console.log(`[${new Date().toLocaleTimeString("pt-PT")}] ${msg}`);
 }
 
 function createBot() {
-  log(`Ligando a ${HOST}:${PORT}...`);
-
   const bot = mineflayer.createBot({
     host: HOST,
     port: PORT,
@@ -37,23 +33,17 @@ function createBot() {
   });
 
   bot.on("kicked", (reason) => {
-    console.log("❌ KICK:");
-    console.log(reason);
+    console.log("❌ KICK:", reason);
   });
 
   bot.on("error", (err) => {
-    console.log("❌ ERRO:");
-    console.log(err);
+    console.log("❌ ERRO:", err);
   });
 
   bot.on("end", () => {
-    log("🔌 Bot desconectou!");
-
-    if (reconnecting) return;
-    reconnecting = true;
+    log("🔌 Desconectado... reconectando");
 
     setTimeout(() => {
-      reconnecting = false;
       createBot();
     }, RECONNECT_DELAY_MS);
   });
